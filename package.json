@@ -7,9 +7,16 @@
     "dev": "concurrently \"pnpm --filter @docvec/server dev\" \"pnpm --filter @docvec/web dev\"",
     "dev:web": "pnpm --filter @docvec/web dev",
     "dev:server": "pnpm --filter @docvec/server dev",
-    "build": "pnpm --filter @docvec/server build && pnpm --filter @docvec/web build",
+    "build": "pnpm run build:shared && pnpm run build:server && pnpm run build:web",
+    "build:shared": "pnpm --filter @docvec/shared build",
     "build:web": "pnpm --filter @docvec/web build",
-    "build:server": "pnpm --filter @docvec/server build"
+    "build:server": "pnpm --filter @docvec/server build",
+    "pack:web": "pnpm run build:web && pnpm --filter @docvec/web run pack",
+    "pack:server": "pnpm --filter @docvec/server run build:pkg",
+    "pack": "pnpm run pack:web && pnpm run pack:server",
+    "pack:server:mac": "pnpm --filter @docvec/server run build:pkg:mac",
+    "pack:server:linux": "pnpm --filter @docvec/server run build:pkg:linux",
+    "pack:server:win": "pnpm --filter @docvec/server run build:pkg:win"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
@@ -18,5 +25,12 @@
   "engines": {
     "node": ">=20.10.0",
     "pnpm": ">=8.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "hnswlib-node",
+      "sharp"
+    ]
   }
 }

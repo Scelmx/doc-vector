@@ -1,9 +1,8 @@
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
+import { getDataDir } from './runtime-paths.js'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const DATA_DIR = path.join(__dirname, '../../data')
+const DATA_DIR = getDataDir()
 
 export const PATHS = {
   data: DATA_DIR,

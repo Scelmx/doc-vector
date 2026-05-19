@@ -296,28 +296,84 @@ GET /api/vector/search-api/:projectId
 
 ## 构建与部署
 
-### 生产构建
+### 生产构建（源码）
 
 ```bash
 pnpm build
 ```
 
-- 服务端输出：`packages/server/dist/`
+- 服务端 TypeScript 输出：`packages/server/dist/index.js`
 - 前端静态资源：`packages/web/dist/`
 
-### 运行生产后端
+### 分别打包发布（推荐）
+
+前后端独立产出，便于分别部署：
+
+```bash
+# 前端 → packages/web/release/web/
+pnpm pack:web
+
+# 后端可执行包 → packages/server/release/docvec-server/
+pnpm pack:server
+
+# 或一次性
+pnpm pack
+```
+
+| 命令 | 产物 |
+|------|------|
+| `pnpm pack:web` | `packages/web/release/web/` 静态文件 + README |
+| `pnpm pack:server` | `packages/server/release/docvec-server/` 含 `docvec-server` 可执行文件 |
+| `pnpm pack:server:mac` | 仅 macOS arm64 可执行文件 |
+| `pnpm pack:server:linux` | 仅 Linux x64 |
+| `pnpm pack:server:win` | 仅 Windows x64 |
+
+**后端 pkg 发布包结构：**
+
+```
+release/docvec-server/
+├── docvec-server      # 可执行主程序（pkg）
+├── start.sh / start.bat
+├── data/              # 运行时数据（可写）
+├── node_modules/      # hnswlib、transformers、onnxruntime 等（勿删）
+└── README.txt
+```
+
+运行（macOS / Linux）：
+
+```bash
+cd packages/server/release/docvec-server
+./start.sh
+# 默认 PORT=3001，数据目录为 ./data
+```
+
+环境变量（可选）：
+
+| 变量 | 说明 |
+|------|------|
+| `DOCVEC_APP_ROOT` | 应用根目录（默认：可执行文件所在目录） |
+| `DOCVEC_DATA_DIR` | 数据目录（默认：`$DOCVEC_APP_ROOT/data`） |
+| `PORT` | 监听端口，默认 `3001` |
+
+首次安装依赖若提示 `Ignored build scripts`，在项目根执行：
+
+```bash
+pnpm approve-builds --all && pnpm install
+```
+
+### 运行生产后端（Node 方式，非 pkg）
 
 ```bash
 cd packages/server
 pnpm build
 node dist/index.js
-# 或
-PORT=3001 node dist/index.js
+# 或单文件 bundle
+pnpm build:bundle && pnpm start:bundle
 ```
 
 ### 部署前端静态资源
 
-将 `packages/web/dist` 交由 Nginx / Caddy 等托管，并反向代理 API：
+将 `packages/web/release/web`（或 `packages/web/dist`）交由 Nginx / Caddy 等托管，并反向代理 API：
 
 ```nginx
 # 示例：Nginx

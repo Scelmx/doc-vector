@@ -1,11 +1,10 @@
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
 import { getVectorDir } from '../../utils/storage.js'
+import { getGlobalSynonymsPath } from '../../utils/runtime-paths.js'
 import { extractQueryTerms, normalizeText } from '../utils/text-similarity.js'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const GLOBAL_SYNONYMS_PATH = path.join(__dirname, '../../../data/synonyms.json')
+const GLOBAL_SYNONYMS_PATH = getGlobalSynonymsPath()
 
 /** 项目级同义词文件名（存于 vectorDir） */
 export const PROJECT_SYNONYMS_FILE = 'synonyms.json'

@@ -1,6 +1,7 @@
 import { HNSWLib } from '@langchain/community/vectorstores/hnswlib'
 import { Document } from '@langchain/core/documents'
-import { Pipeline, pipeline } from '@xenova/transformers'
+import type { Pipeline } from '@xenova/transformers'
+import { loadTransformers } from '../../utils/xenova-loader.js'
 
 /** 中文检索 Embedding 模型（ONNX） */
 const MODEL_NAME = 'Xenova/bge-base-zh-v1.5'
@@ -21,6 +22,7 @@ class LocalEmbeddings {
   async initialize() {
     if (!this.pipe) {
       console.log(`[Embedding] 加载本地 embedding 模型: ${this.modelName}...`)
+      const { pipeline } = await loadTransformers()
       this.pipe = await pipeline('feature-extraction', this.modelName)
       console.log('[Embedding] 模型加载完成')
     }

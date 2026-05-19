@@ -1,7 +1,7 @@
 import type { Pipeline } from '@xenova/transformers'
-import { pipeline } from '@xenova/transformers'
 import type { SearchResult } from '@docvec/shared'
 import { createEmbeddings } from '../../utils/embedding.js'
+import { loadTransformers } from '../../../utils/xenova-loader.js'
 import { RETRIEVAL_CONFIG } from './config.js'
 
 /**
@@ -20,7 +20,7 @@ class CrossEncoderReranker {
     if (!this.pipe) {
       try {
         console.log(`[Reranker] 加载 Cross-Encoder: ${RETRIEVAL_CONFIG.RERANKER_MODEL}...`)
-        // 使用轻量 MS MARCO 模型
+        const { pipeline } = await loadTransformers()
         this.pipe = await pipeline('text-classification', RETRIEVAL_CONFIG.RERANKER_MODEL)
         console.log('[Reranker] Cross-Encoder 加载完成')
       } catch (err) {

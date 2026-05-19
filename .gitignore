@@ -14,4 +14,11 @@ node_modules
 .next/
 .DS_Store
 .pnpm-store
+*.tgz
 packages/server/data
+packages/server/dist/bundle.cjs
+packages/server/dist/bundle.cjs.map
+packages/server/pkg-assets
+packages/server/release
+packages/web/release
+dist
