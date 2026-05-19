@@ -1,0 +1,22 @@
+{
+  "name": "docvec-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "文档向量化管理平台",
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter @docvec/server dev\" \"pnpm --filter @docvec/web dev\"",
+    "dev:web": "pnpm --filter @docvec/web dev",
+    "dev:server": "pnpm --filter @docvec/server dev",
+    "build": "pnpm --filter @docvec/server build && pnpm --filter @docvec/web build",
+    "build:web": "pnpm --filter @docvec/web build",
+    "build:server": "pnpm --filter @docvec/server build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.4.5"
+  },
+  "engines": {
+    "node": ">=20.10.0",
+    "pnpm": ">=8.0.0"
+  }
+}

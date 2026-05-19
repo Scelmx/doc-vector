@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Element Plus 浅色科技风主题 */
+:root {
+  --el-bg-color: #ffffff;
+  --el-bg-color-overlay: #ffffff;
+  --el-bg-color-page: #f0f4f8;
+  --el-text-color-primary: #0f172a;
+  --el-text-color-regular: #475569;
+  --el-text-color-secondary: #64748b;
+  --el-text-color-placeholder: #94a3b8;
+  --el-border-color: #e2e8f0;
+  --el-border-color-light: #f1f5f9;
+  --el-border-color-lighter: #f8fafc;
+  --el-fill-color: #f8fafc;
+  --el-fill-color-light: #f1f5f9;
+  --el-fill-color-lighter: #e2e8f0;
+  --el-fill-color-blank: #ffffff;
+  --el-color-primary: #2563eb;
+  --el-color-primary-light-3: #60a5fa;
+  --el-color-primary-light-5: #93c5fd;
+  --el-color-primary-light-7: #bfdbfe;
+  --el-color-primary-light-9: #dbeafe;
+  --el-color-primary-dark-2: #1d4ed8;
+  --el-mask-color: rgba(15, 23, 42, 0.45);
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* 基础样式 */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #f0f4f8;
+}
+
+/* 文档内容样式 */
+.markdown-content {
+  @apply text-text-secondary leading-relaxed;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  @apply text-text-primary font-semibold mt-6 mb-3;
+}
+
+.markdown-content code {
+  @apply bg-surface-light px-1.5 py-0.5 rounded text-primary-600 text-sm border border-border;
+}
+
+.markdown-content pre {
+  @apply bg-surface-light p-4 rounded-lg overflow-x-auto my-4 border border-border;
+}
+
+/* 卡片悬停效果 */
+.card-hover {
+  @apply transition-all duration-200 shadow-card;
+}
+
+.card-hover:hover {
+  @apply border-primary-300 shadow-card-hover;
+}
+
+/* 上传区域样式 */
+.upload-dragger {
+  @apply border-2 border-dashed border-border rounded-xl p-8 text-center transition-all duration-200 bg-surface;
+}
+
+.upload-dragger:hover,
+.upload-dragger.is-dragover {
+  @apply border-primary-400 bg-primary-50;
+}
+
+/* API 端点代码块 */
+.api-endpoint-code {
+  @apply font-mono text-xs bg-slate-50 border border-border rounded-lg px-3 py-2 text-slate-700 break-all;
+}
