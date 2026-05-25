@@ -15,7 +15,8 @@ const modulesRoot = path.join(assetsRoot, 'node_modules')
 /** 随发布包携带的 npm 包（含原生/动态加载） */
 const RUNTIME_PACKAGES = [
   'hnswlib-node',
-  '@xenova/transformers',
+  '@huggingface/transformers',
+  '@huggingface/tokenizers',
   '@huggingface/jinja',
   'onnxruntime-node',
   'onnxruntime-web',

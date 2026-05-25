@@ -1,20 +1,21 @@
 import { HNSWLib } from '@langchain/community/vectorstores/hnswlib'
 import { Document } from '@langchain/core/documents'
-import type { Pipeline } from '@xenova/transformers'
+import type { FeatureExtractionPipeline } from '@huggingface/transformers'
+import { EMBEDDING_CONFIG } from '../../config/embedding.js'
 import { loadTransformers } from '../../utils/xenova-loader.js'
 
-/** 中文检索 Embedding 模型（ONNX） */
-const MODEL_NAME = 'Xenova/bge-base-zh-v1.5'
-
-/** BGE 检索时 query 前缀指令 */
-const BGE_QUERY_PREFIX = '为这个句子生成表示以用于检索相关文章：'
+function formatQwen3Query(query: string): string {
+  const prefix = `Instruct: ${EMBEDDING_CONFIG.QUERY_TASK}\nQuery:`
+  if (query.startsWith('Instruct:')) return query
+  return `${prefix}${query}`
+}
 
 /**
  * 本地 Embedding 封装（单例 pipeline）
  */
 class LocalEmbeddings {
-  private pipe: Pipeline | null = null
-  private readonly modelName = MODEL_NAME
+  private pipe: FeatureExtractionPipeline | null = null
+  private readonly modelName = EMBEDDING_CONFIG.MODEL
 
   /**
    * 懒加载 transformers pipeline
@@ -23,7 +24,9 @@ class LocalEmbeddings {
     if (!this.pipe) {
       console.log(`[Embedding] 加载本地 embedding 模型: ${this.modelName}...`)
       const { pipeline } = await loadTransformers()
-      this.pipe = await pipeline('feature-extraction', this.modelName)
+      this.pipe = await pipeline('feature-extraction', this.modelName, {
+        dtype: EMBEDDING_CONFIG.DTYPE,
+      })
       console.log('[Embedding] 模型加载完成')
     }
     return this.pipe
@@ -35,11 +38,11 @@ class LocalEmbeddings {
   }
 
   /**
-   * 单条文本编码（mean pooling + normalize）
+   * 单条文本编码（last_token pooling + normalize）
    */
   private async encode(text: string): Promise<number[]> {
     const pipe = await this.initialize()
-    const output = await pipe(text, { pooling: 'mean', normalize: true })
+    const output = await pipe(text, { pooling: 'last_token', normalize: true })
     return this.tensorToVector(output)
   }
 
@@ -55,13 +58,10 @@ class LocalEmbeddings {
   }
 
   /**
-   * 用户 query 向量化（带 BGE 检索指令前缀）
+   * 用户 query 向量化（带 Qwen3 检索指令）
    */
   async embedQuery(text: string): Promise<number[]> {
-    const queryText = text.startsWith(BGE_QUERY_PREFIX)
-      ? text
-      : `${BGE_QUERY_PREFIX}${text}`
-    return this.encode(queryText)
+    return this.encode(formatQwen3Query(text))
   }
 }
 

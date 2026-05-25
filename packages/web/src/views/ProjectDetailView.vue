@@ -319,6 +319,9 @@
                     <span class="text-primary-600 font-medium text-sm">
                       {{ result.filename }}<span v-if="result.section" class="text-text-secondary font-normal"> · {{ result.section }}</span>
                     </span>
+                    <el-tag :type="similarityTagType(result.score)" size="small" effect="plain">
+                      相似度 {{ formatSimilarity(result.score) }}
+                    </el-tag>
                     <el-tag v-if="result.source" size="small" type="info" effect="plain">
                       {{ result.source === 'both' ? '向量+图谱' : result.source === 'graph' ? '图谱' : '向量' }}
                     </el-tag>
@@ -608,6 +611,17 @@ function startPolling() {
       }
     }
   }, 2000)
+}
+
+function formatSimilarity(score: number): string {
+  if (!Number.isFinite(score)) return '—'
+  return `${(score * 100).toFixed(2)}%`
+}
+
+function similarityTagType(score: number): 'success' | 'warning' | 'info' {
+  if (score >= 0.7) return 'success'
+  if (score >= 0.4) return 'warning'
+  return 'info'
 }
 
 async function handleSearch() {

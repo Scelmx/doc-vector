@@ -67,10 +67,10 @@ export function fuseVectorAndGraph(
   return [...byKey.values()]
     .sort((a, b) => (b.rrf ?? 0) - (a.rrf ?? 0))
     .slice(0, limit)
-    .map(({ rrf, sources, ...item }) => ({
+    .map(({ rrf, sources, score, ...item }) => ({
       ...item,
       source: resolveSource(sources, item.source),
-      rrf,
+      score: Math.round(Math.min(1, score * 0.6 + (rrf ?? 0) * 6) * 1000) / 1000,
     }))
 }
 

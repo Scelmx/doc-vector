@@ -12,7 +12,8 @@ const repoRoot = path.join(serverRoot, '../..')
 /** 含原生模块或动态 require，不打入 bundle，由 release/node_modules 提供 */
 const externalNative = [
   'hnswlib-node',
-  '@xenova/transformers',
+  '@huggingface/transformers',
+  '@huggingface/tokenizers',
   '@huggingface/jinja',
   'onnxruntime-node',
   'onnxruntime-web',

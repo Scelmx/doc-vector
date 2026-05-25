@@ -24,7 +24,7 @@ export const RETRIEVAL_CONFIG = {
    * 默认 false：仅用 Bi-Encoder 重排
    * 影响首次性能
    */
-  ENABLE_CROSS_ENCODER: true,
+  ENABLE_CROSS_ENCODER: false,
   /** Cross-Encoder 模型（仅在 ENABLE_CROSS_ENCODER=true 时加载） */
   RERANKER_MODEL: 'Xenova/ms-marco-MiniLM-L-6-v2',
   /** 重排序时截断 passage 字符数 */

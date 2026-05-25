@@ -33,7 +33,7 @@ const pkgOutDir = path.join(releaseRoot, pkgTarget)
 console.log(`[pack] 目标: ${pkgTarget}`)
 
 const publicPkgs =
-  '@xenova/transformers,onnxruntime-node,hnswlib-node,sharp,@huggingface/jinja'
+  '@huggingface/transformers,@huggingface/tokenizers,onnxruntime-node,hnswlib-node,sharp,@huggingface/jinja'
 execSync(
   `npx @yao-pkg/pkg dist/bundle.cjs --targets ${pkgTarget} --output ${path.join(pkgOutDir, exeName)} --compress GZip --public-packages "${publicPkgs}" --fallback-to-source`,
   { cwd: serverRoot, stdio: 'inherit' }

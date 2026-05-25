@@ -1,4 +1,4 @@
-import type { Pipeline } from '@xenova/transformers'
+import type { TextClassificationPipeline } from '@huggingface/transformers'
 import type { SearchResult } from '@docvec/shared'
 import { createEmbeddings } from '../../utils/embedding.js'
 import { loadTransformers } from '../../../utils/xenova-loader.js'
@@ -9,13 +9,13 @@ import { RETRIEVAL_CONFIG } from './config.js'
  * 仅在 ENABLE_CROSS_ENCODER=true 时使用
  */
 class CrossEncoderReranker {
-  private pipe: Pipeline | null = null
+  private pipe: TextClassificationPipeline | null = null
   private loadFailed = false
 
   /**
    * 懒加载 Cross-Encoder 模型
    */
-  async initialize(): Promise<Pipeline | null> {
+  async initialize(): Promise<TextClassificationPipeline | null> {
     if (this.loadFailed) return null
     if (!this.pipe) {
       try {
@@ -46,7 +46,7 @@ class CrossEncoderReranker {
 
     const truncated = passage.slice(0, RETRIEVAL_CONFIG.RERANK_PASSAGE_MAX_CHARS)
     try {
-      const output = (await pipe(query, { text_pair: truncated })) as Array<{
+      const output = (await pipe(query, { text_pair: truncated } as never)) as Array<{
         label: string
         score: number
       }>
@@ -165,7 +165,7 @@ export async function rerankCandidates(
 
   if (RETRIEVAL_CONFIG.ENABLE_CROSS_ENCODER) {
     const ceResults = await rerankWithCrossEncoder(query, limited, topK)
-    if (ceResults) {
+    if (ceResults && Math.max(...ceResults.map((r) => r.score)) >= 0.05) {
       return { results: ceResults, method: 'cross-encoder' }
     }
   }

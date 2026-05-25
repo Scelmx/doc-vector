@@ -4,19 +4,25 @@ import { pathToFileURL } from 'url'
 import { createRequire } from 'module'
 import { getAppRoot } from './runtime-paths.js'
 
-export type TransformersModule = typeof import('@xenova/transformers')
+export type TransformersModule = typeof import('@huggingface/transformers')
 
 let cached: TransformersModule | null = null
 
+const TRANSFORMERS_ENTRY = path.join(
+  '@huggingface',
+  'transformers',
+  'dist',
+  'transformers.node.mjs'
+)
+
 /**
- * 解析 @xenova/transformers 入口（pkg 必须从磁盘加载，不能打进 snapshot）
+ * 解析 Transformers 入口（pkg 必须从磁盘加载，不能打进 snapshot）
  */
 export function resolveTransformersEntry(): string {
-  const rel = path.join('@xenova', 'transformers', 'src', 'transformers.js')
   const roots = [getAppRoot(), process.cwd(), path.join(getAppRoot(), '..')]
 
   for (const root of roots) {
-    const full = path.join(root, 'node_modules', rel)
+    const full = path.join(root, 'node_modules', TRANSFORMERS_ENTRY)
     if (fs.existsSync(full)) return full
   }
 
@@ -25,16 +31,16 @@ export function resolveTransformersEntry(): string {
     path.join(process.cwd(), 'package.json'),
   ]) {
     if (!fs.existsSync(pkgJson)) continue
+    const req = createRequire(pkgJson)
     try {
-      const req = createRequire(pkgJson)
-      return req.resolve('@xenova/transformers/src/transformers.js')
+      return req.resolve('@huggingface/transformers/dist/transformers.node.mjs')
     } catch {
       /* try next */
     }
   }
 
   throw new Error(
-    '未找到 @xenova/transformers，请确认 release 目录下 node_modules 完整，或在开发环境执行 pnpm install'
+    '未找到 @huggingface/transformers，请确认 release 目录下 node_modules 完整，或在开发环境执行 pnpm install'
   )
 }
 
